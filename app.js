@@ -11,9 +11,6 @@ function displayGifInfo() {
     gif +
     "&api_key=dc6zaTOxFJmzC&limit=10";
 
-  // queryURL.done(function(data) {
-  // console.log("success got data", data);
-  // });
 
   // Creates AJAX call for the specific gif button being clicked
   $.ajax({
@@ -26,7 +23,7 @@ function displayGifInfo() {
 
     for (var i = 0; i < results.length; i++) {
       // Creates a div to hold the gif
-      var gifDiv = $("<div class='gif'>");
+      var gifDiv = $("<div class='gif' data-state='inactive'>");
 
       // Storing the rating data
       var rating = results[i].rating;
@@ -96,3 +93,34 @@ $(document).on("click", ".gif", displayGifInfo);
 
 // Calling the renderButtons function to display the intial buttons
 renderButtons();
+
+
+$("#gifs-view").on("click", function () {
+  // change color Purple, Green
+  var state = $(this).attr("data-state");
+  if (state === "inactive") {
+
+      console.log("i am inactive");
+
+      // remove the red class
+      $(this).removeClass("red");
+      $(this).removeClass("purple");
+
+      // add the active color class
+      var activeState = $(this).attr("data-active-color");
+      $(this).addClass(activeColor);
+
+
+      // change the STATE
+      // attr() => Get the current value of an attribute with one parameter
+      //           Set the current value of an attribute with two parameters
+      $(this).attr("data-state", "active");
+  } else {
+      var inactiveColor = $(this).attr("data-inactive-color");
+      $(this).removeClass("red");
+      $(this).removeClass("purple");
+      $(this).addClass(inactiveColor);
+      $(this).attr("data-state", "inactive");
+  }
+
+});
