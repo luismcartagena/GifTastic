@@ -11,7 +11,6 @@ function displayGifInfo() {
     gif +
     "&api_key=dc6zaTOxFJmzC&limit=10";
 
-
   // Creates AJAX call for the specific gif button being clicked
   $.ajax({
     url: queryURL,
@@ -23,7 +22,7 @@ function displayGifInfo() {
 
     for (var i = 0; i < results.length; i++) {
       // Creates a div to hold the gif
-      var gifDiv = $("<div class='gif' data-state='inactive'>");
+      var gifDiv = $("<div class='giphy' data-state='animate'>");
 
       // Storing the rating data
       var rating = results[i].rating;
@@ -35,10 +34,11 @@ function displayGifInfo() {
       gifDiv.append(pOne);
 
       // Creates an element to hold the image
-      // Appends the image
+      var stillState = results[i].images.fixed_height_still.url;
       var imgURL = results[i].images.fixed_height.url;
       var image = $("<img>").attr("src", imgURL);
-
+      
+      // Appends the image
       $("#gifs-view").append(image);
 
       gifDiv.append(image);
@@ -48,6 +48,33 @@ function displayGifInfo() {
       // gifDiv.append(ratingDiv, releaseYearDiv, plotDiv...)
 
       $("#gifs-view").prepend(gifDiv);
+
+      $(".giphy").on("click", function() {
+        console.log(this);
+
+        var state = imgURL;
+        // var stillState = results[i].images.fixed_height_still.url;
+
+        // var state = $(this).attr("data-state");
+        console.log(state);
+
+        // Check if the variable state is equal to 'still',
+        // then update the src attribute of this image to it's data-animate value,
+        // and update the data-state attribute to 'animate'.
+
+        // If state is equal to 'animate', then update the src attribute of this
+        // image to it's data-still value and update the data-state attribute to 'still'
+
+        if (state === imgURL) {
+          console.log("State was animate");
+          image.attr("src", stillState);
+          // state = stillState;
+        } else {
+          console.log("State was still");
+          image.attr("src", imgURL);
+          // state = imgURL;
+        }
+      });
     }
   });
 }
@@ -93,34 +120,3 @@ $(document).on("click", ".gif", displayGifInfo);
 
 // Calling the renderButtons function to display the intial buttons
 renderButtons();
-
-
-$("#gifs-view").on("click", function () {
-  // change color Purple, Green
-  var state = $(this).attr("data-state");
-  if (state === "inactive") {
-
-      console.log("i am inactive");
-
-      // remove the red class
-      $(this).removeClass("red");
-      $(this).removeClass("purple");
-
-      // add the active color class
-      var activeState = $(this).attr("data-active-color");
-      $(this).addClass(activeColor);
-
-
-      // change the STATE
-      // attr() => Get the current value of an attribute with one parameter
-      //           Set the current value of an attribute with two parameters
-      $(this).attr("data-state", "active");
-  } else {
-      var inactiveColor = $(this).attr("data-inactive-color");
-      $(this).removeClass("red");
-      $(this).removeClass("purple");
-      $(this).addClass(inactiveColor);
-      $(this).attr("data-state", "inactive");
-  }
-
-});
