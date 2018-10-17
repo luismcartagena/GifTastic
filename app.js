@@ -36,7 +36,7 @@ function displayGifInfo() {
       // Creates an element to hold the image
       var stillState = results[i].images.fixed_height_still.url;
       var imgURL = results[i].images.fixed_height.url;
-      var image = $("<img>").attr("src", imgURL);
+      var image = $("<img>").attr("src", stillState);
       
       // Appends the image
       $("#gifs-view").append(image);
@@ -52,7 +52,7 @@ function displayGifInfo() {
       $(".giphy").on("click", function() {
         console.log(this);
 
-        var state = imgURL;
+        var state = stillState;
         // var stillState = results[i].images.fixed_height_still.url;
 
         // var state = $(this).attr("data-state");
