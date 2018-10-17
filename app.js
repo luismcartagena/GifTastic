@@ -1,91 +1,98 @@
-// Initial array of movies
-var movies = ["The Matrix", "The Notebook", "Mr. Nobody", "The Lion King"];
+// Initial array of gifs
+var gifs = ["Dogs", "Cats", "Robots", "Science"];
 
-// displayMovieInfo function re-renders the HTML to display the appropriate content
-function displayMovieInfo() {
+// displayGifInfo function re-renders the HTML to display the appropriate content
+function displayGifInfo() {
+  var gif = $(this).attr("data-name");
 
-  var movie = $(this).attr("data-name");
-  var queryURL = "https://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+  //javascript, jQuery
+  var queryURL =
+    "https://api.giphy.com/v1/gifs/search?q=" +
+    gif +
+    "&api_key=dc6zaTOxFJmzC&limit=10";
 
-  // Creates AJAX call for the specific movie button being clicked
+  // queryURL.done(function(data) {
+  // console.log("success got data", data);
+  // });
+
+  // Creates AJAX call for the specific gif button being clicked
   $.ajax({
     url: queryURL,
     method: "GET"
   }).then(function(response) {
+    console.log(response);
 
-    // Creates a div to hold the movie
-    var movie = $("<div>");
-    // Retrieves the Rating Data
-    var ratingDiv = $("<div>");
-    // Creates an element to have the rating displayed
-    ratingDiv.text(response.Rated);
-    // Displays the rating
-    $("#movies-view").append(ratingDiv);
-    // Retrieves the release year
-    var releaseYearDiv = $("<div>");
-    // Creates an element to hold the release year
-    releaseYearDiv.text(response.Year);
-    // Displays the release year
-    $("#movies-view").append(releaseYearDiv);
-    // Retrieves the plot
-    var plotDiv = $("<div>");
-    // Creates an element to hold the plot
-    plotDiv.text(response.Plot);
-    // Appends the plot
-    $("#movies-view").append(plotDiv);
-    // var plotDiv = $("<div>").text(response.Plot);
-    // Creates an element to hold the image
-    var imageDiv = $("<img>")
-    // Appends the image
-    imageDiv.attr("src", response.Poster);
-    $("#movies-view").append(imageDiv);
-    // Puts the entire Movie above the previous movies.
-      
-    // movieDiv.append(ratingDiv, releaseYearDiv, plotDiv...)  
+    var results = response.data;
 
-    $("movie-view").prepend(movieDiv);
+    for (var i = 0; i < results.length; i++) {
+      // Creates a div to hold the gif
+      var gifDiv = $("<div class='gif'>");
+
+      // Storing the rating data
+      var rating = results[i].rating;
+      console.log(rating);
+      // Creating an element to have the rating displayed
+      var pOne = $("<p>").text("Rating: " + rating);
+
+      // Displaying the rating
+      gifDiv.append(pOne);
+
+      // Creates an element to hold the image
+      // Appends the image
+      var imgURL = results[i].images.fixed_height.url;
+      var image = $("<img>").attr("src", imgURL);
+
+      $("#gifs-view").append(image);
+
+      gifDiv.append(image);
+
+      // Puts the entire gif above the previous gifs.
+
+      // gifDiv.append(ratingDiv, releaseYearDiv, plotDiv...)
+
+      $("#gifs-view").prepend(gifDiv);
+    }
   });
-
 }
 
-// Function for displaying movie data
+// Function for displaying gif data
 function renderButtons() {
-
-  // Deletes the movies prior to adding new movies
+  // Deletes the gifs prior to adding new gifs
   // (this is necessary otherwise you will have repeat buttons)
   $("#buttons-view").empty();
-  // Loops through the array of movies
-  for (var i = 0; i < movies.length; i++) {
-
-    // Then dynamicaly generates buttons for each movie in the array
+  // Loops through the array of gifs
+  for (var i = 0; i < gifs.length; i++) {
+    // Then dynamicaly generates buttons for each gif in the array
     // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
     var a = $("<button>");
-    // Adds a class of movie to our button
-    a.addClass("movie");
+    // Adds a class of gif to our button
+    a.addClass("gif");
     // Added a data-attribute
-    a.attr("data-name", movies[i]);
+    a.attr("data-name", gifs[i]);
     // Provided the initial button text
-    a.text(movies[i]);
+    a.text(gifs[i]);
     // Added the button to the buttons-view div
     $("#buttons-view").append(a);
   }
 }
 
-// This function handles events where the add movie button is clicked
-$("#add-movie").on("click", function(event) {
+// This function handles events where the add gif button is clicked
+$("#add-gif").on("click", function(event) {
   event.preventDefault();
   // This line of code will grab the input from the textbox
-  var movie = $("#movie-input").val().trim();
+  var gif = $("#gif-input")
+    .val()
+    .trim();
 
-  // The movie from the textbox is then added to our array
-  movies.push(movie);
+  // The gif from the textbox is then added to our array
+  gifs.push(gif);
 
-  // Calling renderButtons which handles the processing of our movie array
+  // Calling renderButtons which handles the processing of our gif array
   renderButtons();
 });
 
-// Adding click event listeners to all elements with a class of "movie"
-$(document).on("click", ".movie", displayMovieInfo);
+// Adding click event listeners to all elements with a class of "gif"
+$(document).on("click", ".gif", displayGifInfo);
 
 // Calling the renderButtons function to display the intial buttons
 renderButtons();
